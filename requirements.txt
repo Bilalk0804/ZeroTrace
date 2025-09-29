@@ -1,0 +1,7 @@
+# Python dependencies for ZeroTrace GUI
+Pillow>=9.0.0
+qrcode[pil]>=7.0.0
+reportlab>=3.6.0
+
+# Additional dependencies for GUI integration
+psutil>=5.8.0
