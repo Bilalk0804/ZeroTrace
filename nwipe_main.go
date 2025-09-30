@@ -19,6 +19,18 @@ type SimpleDisk struct {
 }
 
 func main() {
+	// Check if we should run in GUI mode
+	if len(os.Args) > 1 {
+		// Check for GUI-specific flags
+		for _, arg := range os.Args[1:] {
+			if arg == "--list-devices" || arg == "--gui-mode" || arg == "--config" {
+				// Call the GUI mode main function
+				mainWithGUI()
+				return
+			}
+		}
+	}
+
 	fmt.Println("=== ZeroTrace Pro - Advanced Cross-Platform Data Erasure ===")
 	fmt.Printf("Platform: %s/%s\n", runtime.GOOS, runtime.GOARCH)
 	fmt.Println("Supports: Windows, Linux, macOS, Android")
@@ -56,19 +68,19 @@ func main() {
 	// Simulate wipe process
 	fmt.Printf("\n🚀 Starting %s on %s...\n", method, selectedDisk.Device)
 	fmt.Println("⚠️  This is a SIMULATION - no actual wiping occurs in this demo")
-	
+
 	for i := 1; i <= 100; i++ {
 		fmt.Printf("\rProgress: %d%% ", i)
 		// time.Sleep(50 * time.Millisecond) // Uncomment for real progress simulation
 	}
-	
+
 	fmt.Println("\n✅ Wipe simulation completed successfully!")
 	fmt.Println("📄 Certificate would be generated here in full version")
 }
 
 func listDisks() []SimpleDisk {
 	var disks []SimpleDisk
-	
+
 	switch runtime.GOOS {
 	case "windows":
 		disks = listWindowsDisks()
@@ -79,13 +91,13 @@ func listDisks() []SimpleDisk {
 	default:
 		fmt.Printf("Platform %s not fully supported yet\n", runtime.GOOS)
 	}
-	
+
 	return disks
 }
 
 func listWindowsDisks() []SimpleDisk {
 	var disks []SimpleDisk
-	
+
 	// Try PowerShell command
 	cmd := exec.Command("powershell", "-Command", "Get-PhysicalDisk | Select-Object DeviceID,FriendlyName,Size | Format-Table -AutoSize")
 	output, err := cmd.Output()
@@ -108,13 +120,13 @@ func listWindowsDisks() []SimpleDisk {
 			Type:   "Windows Disk",
 		})
 	}
-	
+
 	return disks
 }
 
 func listLinuxDisks() []SimpleDisk {
 	var disks []SimpleDisk
-	
+
 	// Try lsblk command
 	cmd := exec.Command("lsblk", "-d", "-o", "NAME,MODEL,SIZE,TYPE")
 	output, err := cmd.Output()
@@ -143,13 +155,13 @@ func listLinuxDisks() []SimpleDisk {
 			}
 		}
 	}
-	
+
 	return disks
 }
 
 func listMacOSDisks() []SimpleDisk {
 	var disks []SimpleDisk
-	
+
 	// Try diskutil command
 	cmd := exec.Command("diskutil", "list")
 	output, err := cmd.Output()
@@ -172,14 +184,14 @@ func listMacOSDisks() []SimpleDisk {
 			Type:   "macOS Disk",
 		})
 	}
-	
+
 	return disks
 }
 
 func displayDisks(disks []SimpleDisk) {
 	fmt.Println("Available disk devices:")
 	fmt.Println("=======================")
-	
+
 	for i, disk := range disks {
 		fmt.Printf("[%d] %s\n", i, disk.Device)
 		fmt.Printf("    Model: %s\n", disk.Model)
@@ -191,24 +203,24 @@ func displayDisks(disks []SimpleDisk) {
 
 func selectDisk(disks []SimpleDisk) *SimpleDisk {
 	fmt.Print("Enter the number of the disk to wipe (or 'q' to quit): ")
-	
+
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
 		return nil
 	}
-	
+
 	input = strings.TrimSpace(input)
 	if input == "q" || input == "Q" {
 		return nil
 	}
-	
+
 	index, err := strconv.Atoi(input)
 	if err != nil || index < 0 || index >= len(disks) {
 		fmt.Println("Invalid selection")
 		return nil
 	}
-	
+
 	return &disks[index]
 }
 
@@ -225,13 +237,13 @@ func showWipeMethods() {
 
 func selectMethod() string {
 	fmt.Print("\nSelect wiping method (1-6): ")
-	
+
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
 		return "Quick Erase"
 	}
-	
+
 	switch strings.TrimSpace(input) {
 	case "1":
 		return "Quick Erase (1-pass zero fill)"
@@ -257,12 +269,12 @@ func confirmWipe(disk *SimpleDisk, method string) bool {
 	fmt.Printf("Method: %s\n", method)
 	fmt.Println("\n🚨 WARNING: This will PERMANENTLY DESTROY all data!")
 	fmt.Print("Type 'CONFIRM' to proceed: ")
-	
+
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
 		return false
 	}
-	
+
 	return strings.TrimSpace(input) == "CONFIRM"
 }

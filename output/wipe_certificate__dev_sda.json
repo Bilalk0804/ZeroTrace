@@ -1,0 +1,15 @@
+{
+  "tool_name": "ZeroTrace-GUI-Integration",
+  "tool_version": "1.0.0",
+  "device": "/dev/sda",
+  "model": "Mock Device",
+  "serial": "GUI-MOCK-123",
+  "size": 1000000000,
+  "timestamp_start": "2024-09-23T10:30:00Z",
+  "timestamp_end": "2024-09-23T11:30:00Z",
+  "method": "nist",
+  "rounds": 1,
+  "verified": true,
+  "success": true,
+  "post_hash_sha256": "mock_hash_for_gui_demo"
+}

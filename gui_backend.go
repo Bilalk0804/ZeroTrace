@@ -10,6 +10,72 @@ import (
 	"strings"
 )
 
+// LinuxDisk represents a disk device on Linux
+type LinuxDisk struct {
+	Device string `json:"device"`
+	Model  string `json:"model"`
+	Size   int64  `json:"size"`
+	Serial string `json:"serial"`
+	Type   string `json:"type"`
+	Health string `json:"health"`
+}
+
+// WipeCertificate represents a wipe verification certificate
+type WipeCertificate struct {
+	ToolName       string `json:"tool_name"`
+	ToolVersion    string `json:"tool_version"`
+	Device         string `json:"device"`
+	Model          string `json:"model"`
+	Serial         string `json:"serial"`
+	Size           int64  `json:"size"`
+	TimestampStart string `json:"timestamp_start"`
+	TimestampEnd   string `json:"timestamp_end"`
+	Method         string `json:"method"`
+	Rounds         int    `json:"rounds"`
+	Verified       bool   `json:"verified"`
+	Success        bool   `json:"success"`
+	PostHashSHA256 string `json:"post_hash_sha256"`
+}
+
+// NwipeWrapper provides a wrapper around nwipe functionality
+type NwipeWrapper struct {
+	// Add any necessary fields here
+}
+
+// NewNwipeWrapper creates a new nwipe wrapper
+func NewNwipeWrapper() (*NwipeWrapper, error) {
+	return &NwipeWrapper{}, nil
+}
+
+// Close closes the nwipe wrapper
+func (nw *NwipeWrapper) Close() error {
+	return nil
+}
+
+// ListDisks lists available disks
+func (nw *NwipeWrapper) ListDisks() ([]LinuxDisk, error) {
+	// Mock implementation for GUI
+	disks := []LinuxDisk{
+		{
+			Device: "/dev/sda",
+			Model:  "Samsung SSD 980 PRO",
+			Size:   1000000000000, // 1TB
+			Serial: "S4EWNX0N123456",
+			Type:   "NVMe SSD",
+			Health: "Good",
+		},
+		{
+			Device: "/dev/sdb",
+			Model:  "Seagate Barracuda",
+			Size:   2000000000000, // 2TB
+			Serial: "Z1Z2Z3Z4",
+			Type:   "SATA HDD",
+			Health: "Good",
+		},
+	}
+	return disks, nil
+}
+
 // GUIConfig represents configuration from the GUI
 type GUIConfig struct {
 	Devices     []string `json:"devices"`
@@ -92,8 +158,8 @@ func runGUIMode(configPath string) error {
 		}
 
 		// Save certificate
-		certPath := filepath.Join(guiConfig.OutputDir, 
-			fmt.Sprintf("wipe_certificate_%s.json", 
+		certPath := filepath.Join(guiConfig.OutputDir,
+			fmt.Sprintf("wipe_certificate_%s.json",
 				strings.ReplaceAll(devicePath, "/", "_")))
 
 		certJSON, _ := json.MarshalIndent(certificate, "", "  ")
