@@ -1,0 +1,15 @@
+{
+  "default_method": "dod",
+  "default_rounds": 1,
+  "default_verify": true,
+  "require_root_confirmation": true,
+  "allow_system_disk_wipe": false,
+  "auto_unmount": false,
+  "output_directory": "output",
+  "log_level": "info",
+  "create_pdf": true,
+  "sign_certificates": true,
+  "key_path": "output/signer_key.pem",
+  "nwipe_log_level": "info",
+  "nwipe_timeout_hours": 24
+}
